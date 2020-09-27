@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:test_shoping_mall/screeens/my_service.dart';
 
 class Authen extends StatefulWidget {
   Authen({Key key}) : super(key: key);
@@ -8,13 +10,15 @@ class Authen extends StatefulWidget {
 }
 
 class _AuthenState extends State<Authen> {
-
+  final formKey = GlobalKey<FormState>();
+  String emailString, passwordString;
 
   Widget backButton() {
     return IconButton(
       icon: Icon(
         Icons.navigate_before,
-        size: 36.0,color: Colors.white,
+        size: 36.0,
+        color: Colors.white,
       ),
       onPressed: () {
         Navigator.of(context).pop();
@@ -24,13 +28,16 @@ class _AuthenState extends State<Authen> {
 
   Widget content() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          showAppName(),
-          emailText(),
-          passwordText(),
-        ],
+      child: Form(
+        key: formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            showAppName(),
+            emailText(),
+            passwordText(),
+          ],
+        ),
       ),
     );
   }
@@ -81,6 +88,9 @@ class _AuthenState extends State<Authen> {
             color: Colors.blue.shade700,
           ),
         ),
+        onSaved: (String value) {
+          emailString = value.trim();
+        },
       ),
     );
   }
@@ -101,8 +111,69 @@ class _AuthenState extends State<Authen> {
             color: Colors.blue.shade700,
           ),
         ),
+        onSaved: (String value) {
+          passwordString = value.trim();
+        },
       ),
     );
+  }
+
+  Future<Null> checAuthen() async {
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    await firebaseAuth
+        .signInWithEmailAndPassword(
+            email: emailString, password: passwordString)
+        .then((response) {
+      print('auth sucess');
+      MaterialPageRoute materialPageRoute = MaterialPageRoute(
+        builder: (context) => MyService(),
+      );
+      Navigator.of(context)
+          .pushAndRemoveUntil(materialPageRoute, (route) => false);
+    }).catchError((response) {
+      String title = response.code;
+      String message = response.message;
+      myAlert(title, message);
+    });
+  }
+
+  Widget showTitle(String title) {
+    return ListTile(
+      leading: Icon(
+        Icons.add_alert,
+        size: 48.0,
+        color: Colors.red,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          color: Colors.red,
+          fontSize: 18.0,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  void myAlert(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: showTitle(title),
+          content: Text(message),
+          actions: [okButton()],
+        );
+      },
+    );
+  }
+
+  Widget okButton() {
+    return FlatButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: Text('ok'));
   }
 
   @override
@@ -125,7 +196,11 @@ class _AuthenState extends State<Authen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue.shade700,
-        onPressed: () {},
+        onPressed: () {
+          formKey.currentState.save();
+          print('email= $emailString,password =$passwordString');
+          checAuthen();
+        },
         child: Icon(
           Icons.navigate_next,
           size: 36.0,
