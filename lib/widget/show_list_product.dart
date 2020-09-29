@@ -36,17 +36,25 @@ class _ShowListProductState extends State<ShowListProduct> {
 
   Widget showImage(int index) {
     return Container(
+      padding: EdgeInsets.all(20.0),
       width: MediaQuery.of(context).size.width * 0.5,
       height: MediaQuery.of(context).size.width * 0.5,
-      child: Image.network(productModels[index].pathImage),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.0),
+            image: DecorationImage(
+                image: NetworkImage(productModels[index].pathImage),
+                fit: BoxFit.cover)),
+      ),
     );
   }
 
   Widget showText(int index) {
-    return Container(
+    return Container(padding: EdgeInsets.only(right: 30.0,),
       width: MediaQuery.of(context).size.width * 0.5,
       height: MediaQuery.of(context).size.width * 0.5,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           showName(index),
           showDetail(index),
@@ -56,7 +64,19 @@ class _ShowListProductState extends State<ShowListProduct> {
   }
 
   Widget showName(int index) {
-    return Text(productModels[index].name);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          productModels[index].name,
+          style: TextStyle(
+            fontSize: 24.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.cyan,
+          ),
+        ),
+      ],
+    );
   }
 
   Widget showDetail(int index) {
@@ -65,7 +85,13 @@ class _ShowListProductState extends State<ShowListProduct> {
       string = string.substring(0, 99);
       string = '$string...';
     }
-    return Text(string);
+    return Text(
+      string,
+      style: TextStyle(
+        fontSize: 14.0,
+        fontStyle: FontStyle.italic,color: Colors.deepPurple
+      ),
+    );
   }
 
   Widget showListView(int index) {
@@ -73,7 +99,6 @@ class _ShowListProductState extends State<ShowListProduct> {
       children: [
         showImage(index),
         showText(index),
-        
       ],
     );
   }
