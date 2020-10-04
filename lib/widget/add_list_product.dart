@@ -81,13 +81,13 @@ class _AddListProductState extends State<AddListProduct> {
     });
   }
 
-  Future<Null> showAlert(String title, String Message) async {
+  Future<Null> showAlert(String title, String message) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(title),
-          content: Text(Message),
+          content: Text(message),
           actions: [
             FlatButton(
                 onPressed: () {

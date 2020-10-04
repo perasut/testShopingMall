@@ -39,10 +39,10 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.cabbitcool.test_shoping_mall"
-        minSdkVersion 21
+        minSdkVersion 18
         targetSdkVersion 28
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 1
+        versionName '1.0'
         multiDexEnabled true
     }
 
